@@ -200,7 +200,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     child: MaterialButton(
                       elevation: 20,
                       onPressed:(){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => SelectScreen()));
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SelectScreen()));
                       },
                       padding: EdgeInsets.all(3),
                       shape: RoundedRectangleBorder(

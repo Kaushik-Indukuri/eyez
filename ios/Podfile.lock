@@ -32,7 +32,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
-  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
   SwiftyTesseract: d92b644e0e12d143bc272bfe1edb73ae07f2b2e8
   tesseract_ocr: c0790f6235087fd3adcb5bad4ea429027f29781e
 
