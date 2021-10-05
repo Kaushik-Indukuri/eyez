@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:eyez/painters/particles.dart';
 import 'package:eyez/screens/gallery-ocr.dart';
 import 'package:flutter/material.dart';
-import 'package:eyez/colors.dart';
+import 'package:eyez/painters/colors.dart';
 import 'package:eyez/painters/generative-dots.dart';
 
 class Home extends StatefulWidget {

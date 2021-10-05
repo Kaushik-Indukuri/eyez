@@ -1,21 +1,16 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as Img;
 import 'package:image_picker/image_picker.dart';
 import 'package:opencv/core/core.dart';
-import 'package:permission/permission.dart';
-import 'package:simple_ocr_plugin/simple_ocr_plugin.dart';
 import 'package:tesseract_ocr/tesseract_ocr.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import '../colors.dart';
+import 'package:eyez/painters/colors.dart';
 import 'home.dart';
 import 'package:opencv/opencv.dart';
-import 'package:path_provider/path_provider.dart';
-import 'photo_resizing.dart';
+import 'img_optimization.dart';
 
 class SelectScreen extends StatefulWidget {
   @override
@@ -25,7 +20,6 @@ class SelectScreen extends StatefulWidget {
 
 class _SelectScreenState extends State<SelectScreen> {
   bool _scanning = false;
-  String _extractText = '';
   File _pickedImage;
   dynamic res;
   Image imageNew = Image.asset('assets/image.png');
@@ -80,8 +74,8 @@ class _SelectScreenState extends State<SelectScreen> {
       platformVersion = 'Failed to get platform version.';
     }
 
-    Img.Image _img = Img.decodeImage(res);
-    File(_pickedImage.path)..writeAsBytesSync(Img.encodeJpg(_img));
+//    Img.Image _img = Img.decodeImage(res);
+//    File(_pickedImage.path)..writeAsBytesSync(Img.encodeJpg(_img));
 
     if (!mounted) return;
   }
@@ -134,12 +128,6 @@ class _SelectScreenState extends State<SelectScreen> {
               : Container(
             height: 300,
               child: imageNew,
-//            decoration: BoxDecoration(
-//                color: Colors.grey[300],
-//                image: DecorationImage(
-//                  image: AssetImage('txtimage.png'),
-//                  fit: BoxFit.fill,
-//                )),
           ),
           Container(
             margin: EdgeInsets.only(left: 20, right: 20, top: 15),
@@ -152,15 +140,6 @@ class _SelectScreenState extends State<SelectScreen> {
                 await ImagePicker.pickImage(source: ImageSource.gallery);
                 runAFunction('threshold');
                 _performOCR();
-//                _extractText =
-//                await TesseractOcr.extractText(_pickedImage.path);
-//                bool exists = await File('$tempPath/image.png').exists();
-//                exists == true ? _extractText =
-//                await TesseractOcr.extractText('$tempPath/image.png') :
-//                    print('ERROR');
-                setState(() {
-                  _scanning = false;
-                });
               },
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
               textColor: Colors.white,
@@ -200,23 +179,16 @@ class _SelectScreenState extends State<SelectScreen> {
           ),
           SizedBox(height: 15),
           Center(
-            child: TextField(
-              controller: _regTextCtrl,
-              enabled: false,
-              minLines: 5,
-              maxLines: 1000,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 40),
+              child: Text(_regTextCtrl.text,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-//            child: Padding(
-//              padding: const EdgeInsets.only(bottom: 40),
-//              child: Text(
-//                _extractText,
-//                textAlign: TextAlign.center,
-//                style: TextStyle(
-//                  fontSize: 25,
-//                  fontWeight: FontWeight.bold,
-//                ),
-//              ),
-//            ),
           )
         ],
       ),
@@ -225,7 +197,7 @@ class _SelectScreenState extends State<SelectScreen> {
 
   _performOCR() async {
     // Approach: optimization based on resizing the photo.
-    //await PhotoOptimizerForOCR.optimizeByResize(_pickedImage.path);
+    await PhotoOptimizerForOCR.optimizeByResize(_pickedImage.path);
 
     if (_pickedImage != null && _pickedImage.path != "") {
       // "   " = \n delimiter
@@ -235,10 +207,12 @@ class _SelectScreenState extends State<SelectScreen> {
         String _resultString = await TesseractOcr.extractText(_pickedImage.path);
         setState(() {
           _regTextCtrl.text = _resultString;
+          _scanning = false;
         });
       } catch(e) {
         setState(() {
           _regTextCtrl.text = "error in recognizing the image / photo => ${e.toString()}";
+          _scanning = false;
         });
       } // End -- try
     }

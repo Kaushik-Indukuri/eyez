@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:eyez/painters/particles.dart';
 import 'package:flutter/material.dart';
-import 'package:eyez/colors.dart';
+import 'package:eyez/painters/colors.dart';
 
 Offset PolarToCartesian(double speed, double theta){
   return Offset(speed*cos(theta), speed*sin(theta));

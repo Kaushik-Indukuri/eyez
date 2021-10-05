@@ -1,10 +1,8 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:opencv/opencv.dart';
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
-import 'package:simple_ocr_plugin/simple_ocr_plugin.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:exif/exif.dart';
 import 'package:image/image.dart' as im;
 
@@ -56,6 +54,8 @@ class PhotoOptimizerForOCR {
   static Future<bool> optimizeByResize(String path, {int maxWidthOrLength = 1500}) async {
     int _w = 0;
     int _h = 0;
+    dynamic res;
+    File file = File(path);
     Map<String, IfdTag> _meta = await PhotoOptimizerForOCR.getPhotoFileMeta(path);
 
     // Note that not every photo might have exif information~~~
@@ -99,6 +99,12 @@ class PhotoOptimizerForOCR {
 
     // Overwrite existing file with the resized one.
     File(path)..writeAsBytesSync(im.encodeJpg(_resizedImage));
+
+    res = await ImgProc.threshold(
+        await file.readAsBytes(), 80, 255, ImgProc.threshBinary);
+    im.Image _img = im.decodeImage(res);
+    File(file.path)..writeAsBytesSync(im.encodeJpg(_img));
+
 
     return true;
   }
